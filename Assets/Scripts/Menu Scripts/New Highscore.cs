@@ -1,7 +1,6 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using TMPro;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
