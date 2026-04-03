@@ -28,9 +28,9 @@ static public  class FileSaver
 		foreach ( S_HighScore highScore in highScoreList )
 		{
 			bitArray.Length = bitArray.Length + 5 * ( highScore.HsName.Length + 1 ) + 4 * ( highScore.HsScore.ToString().Length + highScore.HsCombo.ToString().Length + 2 );
-			bitArray = StoreName( bitArray, ref bit, highScore.HsName );
-			bitArray = StoreNumbers( bitArray, ref bit, highScore.HsScore );
-			bitArray = StoreNumbers( bitArray, ref bit, highScore.HsCombo );
+			bitArray = StoreValue( bitArray, ref bit, highScore.HsName, 5, 'A' );
+			bitArray = StoreValue( bitArray, ref bit, highScore.HsScore.ToString(), 4, '0' );
+			bitArray = StoreValue( bitArray, ref bit, highScore.HsCombo.ToString(), 4, '0' );
 		}
 
 		string outstring = new string(  BitArrayToCharArray( bitArray )  );
@@ -71,45 +71,6 @@ static public  class FileSaver
 		return ( highScores );
 	}
 
-	// Stores a name in 5 bits, followed by the End Of Name character ( 11111 ) accepts capital letters
-	static BitArray StoreName( BitArray bitArray, ref int bit, string toStore )
-	{
-		foreach ( char ch in toStore )
-		{
-			int numval = ch - 'A' ;
-			for ( int e = bit + 5; bit < e; bit++ )
-			{
-				bitArray.Set( bit, ( numval & 0b00000001 ) == 1 );
-				numval = ( numval >> 1 );
-			}
-		}
-		for ( int e = bit + 5; bit < e; bit++ )
-		{
-			bitArray.Set( bit, true );
-		}
-		return ( bitArray );
-	}
-
-	// Stores a number as characters in 4 bits, followed by the End of Number character ( 1111 )
-	static BitArray StoreNumbers( BitArray bitArray, ref int bit, int toStore )
-	{
-		string str = toStore.ToString();
-
-		foreach ( char ch in str )
-		{
-			int numval = ch - '0';
-			for ( int e = bit + 4; bit < e; bit++ )
-			{
-				bitArray.Set( bit, ( numval & 0b00000001 ) == 1 );
-				numval = ( numval >> 1 );
-			}
-		}
-		for ( int e = bit + 4; bit < e; bit++ )
-		{
-			bitArray.Set( bit, true );
-		}
-		return ( bitArray );
-	}
 
 	static char[] BitArrayToCharArray( BitArray bitArray )
 	{
@@ -155,10 +116,33 @@ static public  class FileSaver
 		return ( bitArray );
 	}
 
+	// reads information from a string into a given BitArray. starting from bit 'bit' ( used as iterator ).
+	// at the end, it puts a terminator ( storeAmount bits set to 1)
+	// it will use bitAmount of bits per character, and uses asciiCharacterKey to reduce them to 0
+	// returns a BitArray
+	static BitArray StoreValue( BitArray bitArray, ref int bit, string toStore, int bitAmount, char asciiCharacterKey)
+	{
+		foreach ( char ch in toStore )
+		{
+			int bitmask = 1;
+			int numval = ch - asciiCharacterKey;
+			for ( int e = bit + bitAmount; bit < e; bit++ )
+			{
+				bitArray.Set( bit, ( numval & bitmask ) == 1 );
+				bitmask <<= 1;
+			}
+		}
+		for ( int e = bit + bitAmount; bit < e; bit++ )
+		{
+			bitArray.Set( bit, true );
+		}
+		return ( bitArray );
+	}
+
 	// reads information from BitArray into a string, starting from bit 'bit' ( used as iterator ), until it reads the string terminator.
 	// it will read readAmount of bits for each character, and increases the resulting character by AsciiCharacterkey to form the characters
 	// returns a string. if bit is out of range of bitArray, returns null and sets bit  to -1
-	static string BinaryToString( BitArray bitArray, ref int bit, char stringTerminator, int readAmount, char AsciiCharacterKey )
+	static string BinaryToString( BitArray bitArray, ref int bit, char stringTerminator, int bitAmount, char asciiCharacterKey )
 	{
 		string returnString = "";
 		while ( true )
@@ -169,7 +153,7 @@ static public  class FileSaver
 				bit = -1;
 				return ( null );
 			}
-			for ( int shiftDistance = 0; shiftDistance < readAmount; shiftDistance++, bit++ )
+			for ( int shiftDistance = 0; shiftDistance < bitAmount; shiftDistance++, bit++ )
 			{
 				if ( bitArray[bit] == true )
 				{
@@ -182,7 +166,7 @@ static public  class FileSaver
 			}
 			else
 			{
-				tempChar += AsciiCharacterKey;
+				tempChar += asciiCharacterKey;
 				returnString += tempChar;
 			}
 		}
