@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class ScoreTracker : MonoBehaviour
@@ -10,35 +11,37 @@ public class ScoreTracker : MonoBehaviour
 	[SerializeField] private int		comboLifegainAmount;
 	[SerializeField] private int		comboLifegainMaximum;
 
-	[Header("Canvas text fields")]
-	[SerializeField] private TMP_Text	scoreText;
-	[SerializeField] private TMP_Text	livesText;
-	[SerializeField] private TMP_Text	comboText;
-	[SerializeField] private TMP_Text	scoreBonusText;
-
-	private ScorePasser	scorePasser;
 	private int			currentCombo;
 	private int			comboScoreBonus;
 	private int			highestCombo;
 	private int			lives;
 	private int			score = 0;
+	private ScorePasser	scorePasser;
+	[SerializeField] private ScoreUI		scoreUi;
+	[SerializeField] private MonoBehaviour SPPrefab;
+
+	[SerializeField] public UnityEvent<int> m_DrawScore;
+	[SerializeField] public UnityEvent<int> m_DrawCombo;
+	[SerializeField] public UnityEvent<int> m_DrawBonus;
+	[SerializeField] public UnityEvent<int> m_DrawLives;
 
 	void Start()
 	{
+
 		lives = StartingLives;
-		scoreText.text = "0";
-		printLives();
+		m_DrawScore.Invoke(0);
+		m_DrawLives.Invoke(lives);
+		
 		scorePasser = FindAnyObjectByType<ScorePasser>();
+		if (scorePasser == null)
+		{
+			scorePasser = (ScorePasser)Instantiate(SPPrefab);
+		}
 	}
 
 	void Update()
 	{
-		if (lives < 1)
-		{
-			scorePasser.score = score;
-			scorePasser.highestCombo = highestCombo;
-			SceneManager.LoadScene("Game Over Scene");
-		}
+	
 	}
 
 	private void updateCombo()
@@ -48,8 +51,8 @@ public class ScoreTracker : MonoBehaviour
 		{
 			modifyLives(comboLifegainAmount);
 		}
-		comboText.text = "Combo: " + currentCombo;
-		scoreBonusText.text = "Score bonus: " + comboScoreBonus;
+		m_DrawCombo.Invoke(currentCombo);
+		m_DrawBonus.Invoke(comboScoreBonus);
 	}
 
 	// Overload on incrementScore for treasure chests score mult
@@ -63,15 +66,10 @@ public class ScoreTracker : MonoBehaviour
 		if (increment * multiplier > 0)
 		{
 			score += (increment + comboScoreBonus) * multiplier;
-			scoreText.text = score.ToString();
+			m_DrawScore.Invoke(score);
 			currentCombo++;
 			updateCombo();
 		}
-	}
-
-	void printLives()
-	{
-		livesText.text = "Lives: " + lives.ToString();
 	}
 
 	public void modifyLives(int amount)
@@ -80,7 +78,7 @@ public class ScoreTracker : MonoBehaviour
 		{ 
 			lives += amount;
 		}
-		printLives();
+		m_DrawLives.Invoke(lives);
 		if (amount < 0)
 		{
 			if (currentCombo > highestCombo)
@@ -89,6 +87,19 @@ public class ScoreTracker : MonoBehaviour
 			}
 			currentCombo = 0;
 			updateCombo();
+		}
+		if (lives < 1)
+		{
+			scorePasser.score = score;
+			scorePasser.highestCombo = highestCombo;
+			if (scorePasser.HighScoreList.Count < 10 || score >= scorePasser.HighScoreList[scorePasser.HighScoreList.Count - 1].HsScore)
+			{
+				SceneManager.LoadScene("New High Score");
+			}
+			else
+			{
+				SceneManager.LoadScene("Game Over Scene");
+			}
 		}
 	}
 }

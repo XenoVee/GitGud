@@ -1,71 +1,62 @@
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
+using UnityEngine.Events;
 
-public struct HighScore
+public struct S_HighScore
 {
-	public string	HsNname;
+	public string	HsName;
 	public int		HsScore;
 	public int		HsCombo;
 }
+
 
 public class ScorePasser : MonoBehaviour
 {
 	public int score;
 	public int highestCombo;
-	public List<HighScore> HighScoreList;
+	public List<S_HighScore> HighScoreList;
+
 	// Start is called once before the first execution of Update after the MonoBehaviour is created
 	void Start()
 	{
-		HighScoreList = new List<HighScore>();
+		if (File.Exists(System.IO.Path.Combine(Application.persistentDataPath, "highscores.hs")))
+		{
+			HighScoreList = FileSaver.ReadToList(File.ReadAllText(System.IO.Path.Combine(Application.persistentDataPath, "highscores.hs")));
+		}
+		else
+		{
+			HighScoreList = new();
+		}
 		DontDestroyOnLoad(gameObject);
-		//HighScore sc1 = new HighScore();
-		//HighScore sc2 = new HighScore();
-		//HighScore sc3 = new HighScore();
-		//HighScore sc4 = new HighScore();
-		//HighScore sc5 = new HighScore();
-		//sc1.HsScore = 15;
-		//sc2.HsScore = 12;
-		//sc3.HsScore = 16;
-		//sc4.HsScore = 41;
-		//sc5.HsScore = 12;
-		//sc1.HsNname = "jeff";
-		//sc2.HsNname = "jeff";
-		//sc3.HsNname = "jeff";
-		//sc4.HsNname = "jeff";
-		//sc5.HsNname = "jeff";
-		//HighScoreList.Add(sc1);
-		//HighScoreList.Add(sc2);
-		//HighScoreList.Add(sc3);
-		//HighScoreList.Add(sc4);
-		//HighScoreList.Add(sc5);
-		//UpdateHighScoreList();
 	}
 
-	public void UpdateHighScoreList()
+	S_HighScore NewHighScore(string playerName)
 	{
-		Debug.Log(Mathf.Min(9, HighScoreList.Count) - 1);
+		S_HighScore newScore = new S_HighScore();
+		newScore.HsName = playerName;
+		newScore.HsScore = score;
+		newScore.HsCombo = highestCombo;
+		return (newScore);
+	}
+	public void UpdateHighScoreList(string playerName)
+	{
 		if (HighScoreList.Count > 0)
 		{
-			if (score < HighScoreList[Mathf.Min(9, HighScoreList.Count) - 1].HsScore)
+			if (score < HighScoreList[Mathf.Min(9, HighScoreList.Count) - 1].HsScore && HighScoreList.Count >= 10)
 			{
 				return;
 			}
-			if (HighScoreList.Count == 3)
+			if (HighScoreList.Count == 10)
 			{
-				HighScoreList.RemoveAt(2);
+				HighScoreList.RemoveAt(9);
 			}
 		}
-		HighScore newScore = new HighScore();
-		newScore.HsNname = "Names not yet implemented";
-		newScore.HsScore = score;
-		newScore.HsCombo = highestCombo;
+		S_HighScore newScore = NewHighScore(playerName);
 		HighScoreList.Add(newScore);
 		HighScoreList.Sort((x, y) => y.HsScore - x.HsScore);
-		foreach (HighScore highScore in HighScoreList)
-		{
-			Debug.Log(highScore.HsNname + " " + highScore.HsScore);
-		}
 	}
 }

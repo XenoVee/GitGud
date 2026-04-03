@@ -1,9 +1,9 @@
 using UnityEngine;
+using UnityEngine.Events;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class ParachuteBase : MonoBehaviour
 {
-
 	[SerializeField] protected float		rotationMagnitudeMax	= 5;
 	[SerializeField] protected float		rotationMagnitudeMin	= 2;
 	[SerializeField] protected float		rotationSpeedMax		= 3;

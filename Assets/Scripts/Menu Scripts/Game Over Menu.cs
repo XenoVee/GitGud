@@ -9,15 +9,18 @@ public class GameOverMenu : MonoBehaviour
 	[SerializeField] private TMP_Text comboText;
 
 	public ScorePasser	scorePasser;
+	[SerializeField] private MonoBehaviour SPPrefab;
 
 	void Start()
 	{
 		scorePasser = FindAnyObjectByType<ScorePasser>();
+		if (scorePasser == null)
+		{
+			scorePasser = (ScorePasser)Instantiate(SPPrefab);
+		}
 		scoreText.text = "Score: " + scorePasser.score;
 		comboText.text = "Highest combo: " + scorePasser.highestCombo;
-		scorePasser.UpdateHighScoreList();
-;	}
-
+	}
 	public void restartGame()
 	{
 		SceneManager.LoadScene("Game Scene");
@@ -25,6 +28,11 @@ public class GameOverMenu : MonoBehaviour
 	public void mainMenu() 
 	{
 		SceneManager.LoadScene("Main Menu Scene");
+	}
+
+	public void HighScoreMenu()
+	{
+		SceneManager.LoadScene("Show High Scores Scene");
 	}
 
 

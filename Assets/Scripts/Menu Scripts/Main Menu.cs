@@ -13,6 +13,11 @@ public class MainMenu : MonoBehaviour
 		SceneManager.LoadScene("Tutorial Scene");
 	}
 
+	public void ShowHighScores()
+	{
+		SceneManager.LoadScene("Show High Scores Scene");
+	}
+
 	public void exitGame()
 	{
 		Application.Quit();
