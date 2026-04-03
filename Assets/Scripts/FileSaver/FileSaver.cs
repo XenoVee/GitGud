@@ -124,12 +124,11 @@ static public  class FileSaver
 	{
 		foreach ( char ch in toStore )
 		{
-			int bitmask = 1;
 			int numval = ch - asciiCharacterKey;
 			for ( int e = bit + bitAmount; bit < e; bit++ )
 			{
-				bitArray.Set( bit, ( numval & bitmask ) == 1 );
-				bitmask <<= 1;
+				bitArray.Set( bit, ( numval & 0b00000001 ) == 1 );
+				numval = ( numval >> 1 );
 			}
 		}
 		for ( int e = bit + bitAmount; bit < e; bit++ )
