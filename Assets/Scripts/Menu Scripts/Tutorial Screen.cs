@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class TutorialScreen : MonoBehaviour
 {
-	public void mainMenu()
+	public void MainMenu()
 	{
-		SceneManager.LoadScene("Main Menu Scene");
+		SceneManager.LoadScene( "Main Menu Scene" );
 	}
 }

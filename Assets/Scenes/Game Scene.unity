@@ -866,6 +866,8 @@ MonoBehaviour:
   parachuteGolden: {fileID: 84971268821116721, guid: db01b6a5f69750949a30a37289298b65, type: 3}
   scoreTracker: {fileID: 1086740281}
   spawnHeight: 20
+  spawnXMin: -8
+  spawnXMax: 8
 --- !u!4 &743470168
 Transform:
   m_ObjectHideFlags: 0

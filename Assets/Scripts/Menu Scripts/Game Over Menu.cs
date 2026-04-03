@@ -5,34 +5,33 @@ using UnityEngine.SceneManagement;
 
 public class GameOverMenu : MonoBehaviour
 {
-	[SerializeField] private TMP_Text scoreText;
-	[SerializeField] private TMP_Text comboText;
-
-	public ScorePasser	scorePasser;
-	[SerializeField] private MonoBehaviour SPPrefab;
+	[SerializeField] private TMP_Text		scoreText;
+	[SerializeField] private TMP_Text		comboText;
+	[SerializeField] public ScorePasser		scorePasser;
+	[SerializeField] private MonoBehaviour	SPPrefab;
 
 	void Start()
 	{
 		scorePasser = FindAnyObjectByType<ScorePasser>();
-		if (scorePasser == null)
+		if ( scorePasser == null )
 		{
-			scorePasser = (ScorePasser)Instantiate(SPPrefab);
+			scorePasser = ( ScorePasser )Instantiate( SPPrefab );
 		}
 		scoreText.text = "Score: " + scorePasser.score;
 		comboText.text = "Highest combo: " + scorePasser.highestCombo;
 	}
-	public void restartGame()
+	public void RestartGame()
 	{
-		SceneManager.LoadScene("Game Scene");
+		SceneManager.LoadScene( "Game Scene" );
 	}
-	public void mainMenu() 
+	public void MainMenu() 
 	{
-		SceneManager.LoadScene("Main Menu Scene");
+		SceneManager.LoadScene( "Main Menu Scene" );
 	}
 
 	public void HighScoreMenu()
 	{
-		SceneManager.LoadScene("Show High Scores Scene");
+		SceneManager.LoadScene( "Show High Scores Scene" );
 	}
 
 

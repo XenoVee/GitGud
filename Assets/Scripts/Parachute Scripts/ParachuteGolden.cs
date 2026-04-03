@@ -4,14 +4,14 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 public class ParachuteGolden : ParachuteBase
 {
 	[SerializeField] protected int pointMultiplier = 5;
-	protected override void hitFloor()
+	protected override void HitFloor()
 	{
-		base.hitFloor();
-		scoreTracker.modifyLives(-damage);
+		base.HitFloor();
+		scoreTracker.ModifyLives( -damage );
 	}
-	protected override void hitPlayer()
+	protected override void HitPlayer()
 	{
-		base.hitPlayer();
-		scoreTracker.incrementScore(points, pointMultiplier);
+		base.HitPlayer();
+		scoreTracker.IncrementScore( points, pointMultiplier );
 	}
 }

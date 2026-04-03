@@ -17,88 +17,83 @@ public class ScoreTracker : MonoBehaviour
 	private int			lives;
 	private int			score = 0;
 	private ScorePasser	scorePasser;
-	[SerializeField] private ScoreUI		scoreUi;
-	[SerializeField] private MonoBehaviour SPPrefab;
 
-	[SerializeField] public UnityEvent<int> m_DrawScore;
-	[SerializeField] public UnityEvent<int> m_DrawCombo;
-	[SerializeField] public UnityEvent<int> m_DrawBonus;
-	[SerializeField] public UnityEvent<int> m_DrawLives;
+	[SerializeField] private ScoreUI		scoreUi;
+	[SerializeField] private MonoBehaviour	SPPrefab;
+	[SerializeField] public UnityEvent<int>	m_DrawScore;
+	[SerializeField] public UnityEvent<int>	m_DrawCombo;
+	[SerializeField] public UnityEvent<int>	m_DrawBonus;
+	[SerializeField] public UnityEvent<int>	m_DrawLives;
 
 	void Start()
 	{
 
 		lives = StartingLives;
-		m_DrawScore.Invoke(0);
-		m_DrawLives.Invoke(lives);
+		m_DrawScore.Invoke( 0 );
+		m_DrawLives.Invoke( lives );
 		
 		scorePasser = FindAnyObjectByType<ScorePasser>();
-		if (scorePasser == null)
+		if ( scorePasser == null )
 		{
-			scorePasser = (ScorePasser)Instantiate(SPPrefab);
+			scorePasser = ( ScorePasser )Instantiate( SPPrefab );
 		}
 	}
 
-	void Update()
-	{
-	
-	}
-
-	private void updateCombo()
+	private void UpdateCombo()
 	{
 		comboScoreBonus = currentCombo / comboBonusIncreaseinterval;
-		if (currentCombo % comboLifegainInterval == 0 && currentCombo > 0)
+		if ( currentCombo % comboLifegainInterval == 0 && currentCombo > 0 )
 		{
-			modifyLives(comboLifegainAmount);
+			ModifyLives( comboLifegainAmount );
 		}
-		m_DrawCombo.Invoke(currentCombo);
-		m_DrawBonus.Invoke(comboScoreBonus);
+		m_DrawCombo.Invoke( currentCombo );
+		m_DrawBonus.Invoke( comboScoreBonus );
 	}
 
 	// Overload on incrementScore for treasure chests score mult
-	public void incrementScore(int increment)
+	public void IncrementScore( int increment )
 	{
-		incrementScore(increment, 1);
+		IncrementScore( increment, 1 );
 	}
 
-	public void incrementScore(int increment, int multiplier)
+	public void IncrementScore( int increment, int multiplier )
 	{
-		if (increment * multiplier > 0)
+		if ( increment * multiplier > 0 )
 		{
-			score += (increment + comboScoreBonus) * multiplier;
-			m_DrawScore.Invoke(score);
+			score += ( increment + comboScoreBonus ) * multiplier;
+			m_DrawScore.Invoke( score );
 			currentCombo++;
-			updateCombo();
+			UpdateCombo();
 		}
 	}
 
-	public void modifyLives(int amount)
+	public void ModifyLives( int amount )
 	{
-		if (!(amount > 0 && lives >= comboLifegainMaximum))
+		if ( !( amount > 0 && lives >= comboLifegainMaximum ) )
 		{ 
 			lives += amount;
 		}
-		m_DrawLives.Invoke(lives);
-		if (amount < 0)
+		m_DrawLives.Invoke( lives );
+		if ( amount < 0 )
 		{
-			if (currentCombo > highestCombo)
+			if ( currentCombo > highestCombo )
 			{
 				highestCombo = currentCombo;
 			}
 			currentCombo = 0;
-			updateCombo();
+			UpdateCombo();
 		}
-		if (lives < 1)
+		if ( lives < 1 )
 		{
 			scorePasser.score = score;
 			scorePasser.highestCombo = highestCombo;
-			if (scorePasser.HighScoreList.Count < 10 || score >= scorePasser.HighScoreList[scorePasser.HighScoreList.Count - 1].HsScore)
+			if ( scorePasser.highScoreList.Count < 10 || score >= scorePasser.highScoreList[scorePasser.highScoreList.Count - 1].HsScore )
 			{
-				SceneManager.LoadScene("New High Score");
+				SceneManager.LoadScene( "New High Score" );
 			}
 			else
 			{
-				SceneManager.LoadScene("Game Over Scene");
+				SceneManager.LoadScene( "Game Over Scene" );
 			}
 		}
 	}

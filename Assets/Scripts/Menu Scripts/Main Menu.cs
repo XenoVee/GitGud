@@ -3,22 +3,22 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-	public void startGame()
+	public void StartGame()
 	{
-		SceneManager.LoadScene("Game Scene");
+		SceneManager.LoadScene( "Game Scene" );
 	}
 
-	public void howToPlay()
+	public void HowToPlay()
 	{
-		SceneManager.LoadScene("Tutorial Scene");
+		SceneManager.LoadScene( "Tutorial Scene" );
 	}
 
 	public void ShowHighScores()
 	{
-		SceneManager.LoadScene("Show High Scores Scene");
+		SceneManager.LoadScene( "Show High Scores Scene" );
 	}
 
-	public void exitGame()
+	public void ExitGame()
 	{
 		Application.Quit();
 	}

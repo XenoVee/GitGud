@@ -4,11 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class Highscorelistmenu : MonoBehaviour
 {
-	[HideInInspector] public ScorePasser scorePasser;
-	[SerializeField] private TMP_Text highScoreNames;
-	[SerializeField] private TMP_Text highScoreScores;
-	[SerializeField] private TMP_Text highScoreCombos;
-	[SerializeField] private MonoBehaviour SPPrefab;
+	[SerializeField] private TMP_Text		highScoreNames;
+	[SerializeField] private TMP_Text		highScoreScores;
+	[SerializeField] private TMP_Text		highScoreCombos;
+	[SerializeField] private MonoBehaviour	SPPrefab;
+	[HideInInspector] public ScorePasser	scorePasser;
 
 	void Start()
 	{
@@ -17,11 +17,11 @@ public class Highscorelistmenu : MonoBehaviour
 		string hsCombos = "";
 
 		scorePasser = FindAnyObjectByType<ScorePasser>();
-		if (scorePasser == null)
+		if ( scorePasser == null )
 		{
-			scorePasser = (ScorePasser)Instantiate(SPPrefab);
+			scorePasser = ( ScorePasser )Instantiate( SPPrefab );
 		}
-		foreach (var highScore in scorePasser.HighScoreList)
+		foreach ( var highScore in scorePasser.highScoreList )
 		{
 			hsNames += highScore.HsName;
 			hsNames += "\n";
@@ -37,17 +37,12 @@ public class Highscorelistmenu : MonoBehaviour
 		highScoreCombos.text = hsCombos;
 	}
 
-	void Update()
+	public void RestartGame()
 	{
-		
+		SceneManager.LoadScene( "Game Scene" );
 	}
-
-	public void restartGame()
+	public void MainMenu()
 	{
-		SceneManager.LoadScene("Game Scene");
-	}
-	public void mainMenu()
-	{
-		SceneManager.LoadScene("Main Menu Scene");
+		SceneManager.LoadScene( "Main Menu Scene" );
 	}
 }

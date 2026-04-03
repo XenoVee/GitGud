@@ -3,14 +3,14 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class ParachuteBomb : ParachuteBase
 {
-	protected override void hitFloor()
+	protected override void HitFloor()
 	{
-		base.hitFloor();
-		scoreTracker.incrementScore(points);
+		base.HitFloor();
+		scoreTracker.IncrementScore( points );
 	}
-	protected override void hitPlayer()
+	protected override void HitPlayer()
 	{
-		base.hitPlayer();
-		scoreTracker.modifyLives(-damage);
+		base.HitPlayer();
+		scoreTracker.ModifyLives( -damage );
 	}
 }
